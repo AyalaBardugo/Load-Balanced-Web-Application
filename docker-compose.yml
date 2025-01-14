@@ -1,0 +1,56 @@
+services:
+  nginx:
+    build: 
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - app_network
+
+  app:
+    build:
+      context: ./app
+    deploy:         
+      replicas: 3 
+    expose:
+      - "5000"
+    networks:
+      - app_network
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=mysql-db
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - DB_NAME=app_db
+    volumes:
+      - app_logs:/app/logs
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db 
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: app_db
+    expose:
+      - "3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./DB/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app_network:
+
+volumes:
+  db_data:
+  app_logs:
