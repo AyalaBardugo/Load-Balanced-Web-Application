@@ -5,12 +5,6 @@
 ---
 
 ## Sequence Diagram
-<<<<<<< HEAD
-![alt text](<docs/sequence diagram.svg>)
-
-### Structure
-![alt text](docs/structure.svg)
-=======
 <div align="center">
 <img src="https://github.com/user-attachments/assets/a54e4709-0a94-4250-8fa5-d698fff3ee1b" alt="Project Structure" width="800">
 </div>
