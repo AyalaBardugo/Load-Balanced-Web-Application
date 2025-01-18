@@ -71,45 +71,49 @@ class RouteManager:
             logging.error(f"Error logging access: {e}")
 
     def create_sticky_cookie(self, response, internal_ip: str) -> None:
-        """Add sticky session cookie to response
-        Args:
-            response: Flask response object
-            internal_ip: Server IP for cookie
-        """
+        """Add sticky session cookie to response"""
         expires = datetime.now(timezone.utc) + timedelta(minutes=5)
         expires_str = expires.strftime('%a, %d %b %Y %H:%M:%S GMT')
-        response.headers['Set-Cookie'] = (
-            f'server_ip={internal_ip}; '
-            f'Expires={expires_str}; '
-            'Path=/; '
-            'HttpOnly'
-        )
+        cookie_value = f'server_ip={internal_ip}; Expires={expires_str}; Path=/; HttpOnly'
+        
+        logging.info(f"Setting new cookie: {cookie_value}")
+        logging.info(f"Cookie expiration time: {expires_str}")
+        
+        response.headers['Set-Cookie'] = cookie_value
 
-    def create_response_with_cookie(self, response_data: str) -> Response:
-        """Create response with sticky session cookie if needed
-        Args:
-            response_data: Response content
-        Returns:
-            Response: Flask response with cookie
-        """
-        internal_ip = socket.gethostbyname(socket.gethostname())
-        response = make_response(response_data)
+
+    def create_response_with_cookie(self, internal_ip: str) -> Response:
+        """Create response with sticky session cookie if needed"""
+        # internal_ip = socket.gethostbyname(socket.gethostname())
+        response = make_response(f"Server Internal IP: {internal_ip}")
+        
+        logging.info(f"Request cookies: {request.cookies}")
+        logging.info(f"Current container IP: {internal_ip}")
+        
         if 'server_ip' not in request.cookies:
+            logging.info("No existing cookie found - creating new cookie")
             self.create_sticky_cookie(response, internal_ip)
+        else:
+            logging.info(f"Existing cookie found - server_ip: {request.cookies.get('server_ip')}")
+            
         return response
 
-    def handle_home(self)-> Response:
-        """Handle root path '/'
-        Returns:
-            Response: Server IP with sticky cookie
-        """
+    def handle_home(self) -> Response:
+        """Handle root path '/'"""
         client_ip = request.remote_addr
         internal_ip = socket.gethostbyname(socket.gethostname())
         current_time = datetime.now(timezone.utc)
+        
+        logging.info("=== New Request ===")
+        logging.info(f"Time: {current_time}")
+        logging.info(f"Client IP: {client_ip}")
+        logging.info(f"Container Internal IP: {internal_ip}")
+        logging.info(f"Request Headers: {dict(request.headers)}")
 
         self.increment_counter()
         self.log_access(client_ip, internal_ip, current_time)
-        return self.create_response_with_cookie(f"Server Internal IP: {internal_ip}")
+        return self.create_response_with_cookie(internal_ip)
+
 
     def handle_show_count(self)-> Response:
         """Handle '/showcount' path
