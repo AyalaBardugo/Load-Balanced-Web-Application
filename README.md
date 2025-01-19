@@ -5,12 +5,6 @@
 ---
 
 ## Sequence Diagram
-<<<<<<< HEAD
-![alt text](<docs/sequence diagram.svg>)
-
-### Structure
-![alt text](docs/structure.svg)
-=======
 <div align="center">
 <img src="https://github.com/user-attachments/assets/a54e4709-0a94-4250-8fa5-d698fff3ee1b" alt="Project Structure" width="800">
 </div>
@@ -20,7 +14,6 @@
 <div align="center">
 <img src="https://github.com/user-attachments/assets/07ddb57a-268b-4cf1-b8f0-aa3b0efd9127" alt="Project Structure" width="500">
 </div>
->>>>>>> d7e667755cb25175f82ea9089b990269aa2b4b3a
 
 
 ## The system consists of three main components:
