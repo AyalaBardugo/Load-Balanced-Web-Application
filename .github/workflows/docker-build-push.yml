@@ -3,7 +3,7 @@ name: Build and Push to ECR
 on:
   push:
     branches:
-        - master  # Run the workflow on changes pushed to the master branch
+        - main  # Run the workflow on changes pushed to the master branch
         - dev   # Run the workflow on changes pushed to the dev branch
 
 jobs:
