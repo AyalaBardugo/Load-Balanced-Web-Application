@@ -34,7 +34,7 @@ jobs:
       # Tag the image with 'latest' and a dynamic tag (branch name and commit SHA)
       - name: Build Docker image
         run: |
-          docker build -t ayalabar-app:latest .
+          docker build -t ayalabar-app:latest ./app
           docker tag ayalabar-app:latest 930354804502.dkr.ecr.eu-north-1.amazonaws.com/ayalabar-app:latest
           docker tag ayalabar-app:latest 930354804502.dkr.ecr.eu-north-1.amazonaws.com/ayalabar-app-${{ github.ref_name }}-${{ github.sha }}
 
