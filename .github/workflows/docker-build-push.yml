@@ -3,8 +3,7 @@ name: Build and Push to ECR
 on:
   push:
     branches:
-        - main  # Run the workflow on changes pushed to the master branch
-        - dev   # Run the workflow on changes pushed to the dev branch
+      - main  # Run the workflow on changes pushed to the main branch
 
 jobs:
   build-and-push:
@@ -16,30 +15,26 @@ jobs:
         uses: actions/checkout@v3
 
       # Step 2: Configure AWS credentials
-      # Use GitHub Secrets to securely provide AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-north-1  # The AWS region where the ECR repository is located
+          aws-region: eu-north-1
 
       # Step 3: Log in to Amazon ECR
-      # Authenticate Docker CLI with your ECR registry
       - name: Log in to Amazon ECR
         run: |
           aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 930354804502.dkr.ecr.eu-north-1.amazonaws.com
 
-      # Step 4: Build the Docker image and tag it
-      # Tag the image with 'latest' and a dynamic tag (branch name and commit SHA)
+      # Step 4: Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t ayalabar-app:latest ./app
+          docker build -t ayalabar-app:latest ./app  # Build from the app folder
           docker tag ayalabar-app:latest 930354804502.dkr.ecr.eu-north-1.amazonaws.com/ayalabar-app:latest
           docker tag ayalabar-app:latest 930354804502.dkr.ecr.eu-north-1.amazonaws.com/ayalabar-app-${{ github.ref_name }}-${{ github.sha }}
 
-      # Step 5: Push the Docker image to ECR
-      # Push the 'latest' tag and the dynamic tag to the ECR repository
+      # Step 5: Push Docker image to ECR
       - name: Push Docker image to ECR
         run: |
           docker push 930354804502.dkr.ecr.eu-north-1.amazonaws.com/ayalabar-app:latest
