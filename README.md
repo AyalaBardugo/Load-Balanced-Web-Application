@@ -1,8 +1,12 @@
 
 # Load Balanced Web Application
 
-## High-availability Flask application with Nginx load balancing, sticky sessions, and MySQL persistence.
----
+## Overview
+
+This project deploys a Python web application in Docker containers, utilizing Nginx as a load balancer and MySQL as a database.<br>
+The application increments a global counter, logs client requests, and uses cookies to enforce session stickiness in the load balancer. 
+Deployment is managed with Docker Compose, and a Bash script enables dynamic scaling of application containers.
+
 
 ## Sequence Diagram
 <div align="center">
